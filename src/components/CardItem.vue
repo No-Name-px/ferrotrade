@@ -1,20 +1,51 @@
 <template>
-  <div class="card-item">
-    <p class="cart-item__title">Позиция</p>
-    <p class="card-item__text">Марка: 0dsfsdfdf</p>
-    <p class="card-item__text">Диаметр: 0</p>
-    <p class="card-item__text">Упаковка: 0</p>
-    <p class="card-item__text">Партия: 0</p>
-    <p class="card-item__text">Плавка: 0</p>
-    <p class="card-item__text">Вес: 0</p>
-    <p class="card-item__text">Комментарий: 0</p>
-    <p class="card-item__text">Статус: 0</p>
-  </div>
+  <div class="card-item" v-on:click="moreInfo">
+    <p class="cart-item__title">{{ isPosition ? 'Позиция' : 'Поддон' }}</p>
+    <p class="card-item__text">Марка: {{position.mark}}</p>
+    <p class="card-item__text">Диаметр: {{position.diameter}}</p>
+    <p class="card-item__text">Упаковка: {{position.packing}}</p>
+    <p class="card-item__text">Партия: {{position.part}}</p>
+    <p class="card-item__text">Плавка: {{position.plav}}</p>
+    <p class="card-item__text">Вес: {{position.mass}}</p>
+    <p class="card-item__text" v-if="position.comment">Комментарий: {{position.comment}}</p>
+    <p class="card-item__text">Статус: {{position.status}}</p>
+    </div>
 </template>
 
 <script>
 export default {
   name: "CardItem",
+  props: {
+    position: {
+      type : Object
+    }
+  },
+  data() {
+    return {
+      isPosition: true,
+    }
+  },
+  mounted() {
+    if (!this.position.hasOwnProperty("createdFrom")) {
+      this.isPosition = false
+    }
+    switch (this.position.status) {
+      case 'In_stock':
+        this.position.status = 'На складе';
+        break;
+      case 'Departured':
+        this.position.status = 'Отгружен';
+        break;
+      case 'Arriving':
+        this.position.status = 'В дороге';
+        break;
+    }
+  },
+  methods: {
+    moreInfo(){
+      this.$router.replace({ name: "Product", params: { id:this.position.id } });
+    }
+  }
 };
 </script>
 
@@ -26,11 +57,11 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  cursor: pointer;
 }
 .cart-item__title {
   font-size: 1.3rem;
-  margin: 0 auto;
-  margin-bottom: 0.6rem;
+  margin: 0 auto 0.6rem;
 }
 .card-item__text {
   font-size: 1.1rem;

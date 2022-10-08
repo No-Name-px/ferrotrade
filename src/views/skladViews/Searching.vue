@@ -1,39 +1,58 @@
 <template>
   <div class="searching page-content">
-    <div class="searching__searching-bar">
-      <FormInput
-        ph="Введите/отсканируйте информацию"
-        class="searching__input"
-        type="text"
-      />
-      <button class="btn searching__btn">Найти</button>
-    </div>
+    <SearchInput
+    @doSearch="search"
+    />
+    <Loader v-if="!loaded"/>
+    <SearchList
+    v-bind:positions="positions"
+    ></SearchList>
   </div>
 </template>
 
 <script>
-import FormInput from "../../components/Register/FormInput.vue";
+import SearchInput from "@/components/Search/SearchInput";
+import SearchList from "@/components/Search/SearchList";
+import Loader from "@/components/Loader";
+import Vue from "vue";
 
 export default {
   name: "searching",
   components: {
-    FormInput,
+    SearchInput,
+    SearchList,
+    Loader
   },
+  data () {
+    return {
+      positions : [],
+      loaded : true
+    }
+  },
+  methods: {
+    search(value) {
+      this.loaded = false
+      const body = {
+        'query' : value
+      }
+      const searchUrl = Vue.prototype.$hostname + '/api/search'
+      fetch(searchUrl, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+          "Content-Type" : "application/json"
+        }
+      })
+          .then(response => response.json())
+          .then(json => this.positions = json)
+          .then(() => this.loaded = true)
+    }
+  }
 };
 </script>
 
 <style scoped>
 .searching {
   padding-left: 3rem;
-}
-.searching__searching-bar {
-  width: 100%;
-  display: flex;
-}
-.searching__input {
-  width: 60%;
-}
-.searching__btn {
-  margin-left: 2rem;
 }
 </style>

@@ -1,15 +1,14 @@
 <template>
   <div id="app">
 		<router-view></router-view>
+    <notifications/>
   </div>
 </template>
 
 <script>
-
 export default {
-  components: {},
 	mounted() {
-		this.$router.replace({ name: "Login" });
+		// this.$router.replace({ name: "Login" });
 	},
 	
 }

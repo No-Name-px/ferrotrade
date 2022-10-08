@@ -11,7 +11,7 @@ export default {
   props: {
     defaultChecked: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   data() {

@@ -1,110 +1,54 @@
 <template>
-  <form action="#" class="register-form page-content">
-    <FormInput
-      title="Марка"
-      type="input"
-      :hasRedact="true"
-      stl="darkSide"
-      class="register-form__input input__small"
-    />
-    <FormInput
-      title="Диаметр"
-      type="input"
-      :hasRedact="true"
-      stl="darkSide"
-      class="register-form__input input__small"
-    />
-    <FormInput
-      title="Упаковка"
-      type="input"
-      :hasRedact="true"
-      stl="darkSide"
-      class="register-form__input input__small"
-    />
-    <FormInput
-      title="Плавка"
-      type="input"
-      :hasRedact="true"
-      stl="darkSide"
-      class="register-form__input input__small"
-    />
-    <FormInput
-      title="Партия"
-      type="input"
-      :hasRedact="true"
-      stl="darkSide"
-      class="register-form__input input__small"
-    />
-    <FormInput
-      title="Вес"
-      type="input"
-      :hasRedact="true"
-      stl="darkSide"
-      class="register-form__input input__small"
-    />
-    <FormInput
-      title="Производитель"
-      type="input"
-      :hasRedact="true"
-      stl="darkSide"
-      class="register-form__input input__medium"
-    />
-    <FormInput
-      title="Количество"
-      type="counter"
-      :hasRedact="false"
-      stl="darkSide"
-      class="register-form__input input__small"
-    />
-    <FormInput
-      title="Комментарий"
-      type="textarea"
-      :hasRedact="true"
-      stl="darkSide"
-      class="register-form__input input__large"
-    />
-  </form>
+  <div class="page-content">
+    <FirstStepForm @nextStep="toSecondStep" v-if="step === 1"/>
+    <SecondStepForm @nextStep="toThirdStep" v-if="step === 2" :positionBase="position" :amount="amount"/>
+    <PrintStep v-if="step === 3" :ids="ids"/>
+  </div>
 </template>
 
 <script>
-import FormInput from "../../components/Register/FormInput.vue";
+import FirstStepForm from "@/components/Register/FirstStepForm";
+import SecondStepForm from "@/components/Register/SecondStepForm";
+import PrintStep from "@/components/PrintStep";
+import Vue from "vue";
 
 export default {
   name: "register",
   components: {
-    FormInput,
+    FirstStepForm,
+    SecondStepForm,
+    PrintStep
   },
+  data() {
+    return {
+      position: {},
+      amount: 0,
+      step: 1,
+      ids: []
+    }
+  },
+  mounted() {
+    const url = Vue.prototype.$hostname + '/api/position/marks'
+    fetch(url).then(response => response.json()).then(json => this.marks = json)
+  },
+  methods: {
+    toSecondStep(data) {
+      this.position = data.position
+      this.amount = data.amount
+      this.step = 2
+    },
+    toThirdStep(data) {
+      console.log(data);
+      this.ids = data.id
+      this.step = 3
+    },
+    onAutocompleteChange(val) {
+      this.mark = val
+    }
+  }
 };
 </script>
 
 <style scoped>
-.register-form {
-  width: 55%;
-  margin-left: auto;
-  margin-right: auto;
 
-  border: 5px solid var(--color-primary);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  flex-wrap: wrap;
-}
-.register-form__input {
-  margin-top: 0.8rem;
-}
-.input__small {
-  width: 35%;
-}
-.input__small:nth-child(2n) {
-  margin-left: 5%;
-}
-.input__small:nth-child(1),
-.input__small:nth-child(2) {
-  margin-top: 0;
-}
-.input__medium {
-  width: 60%;
-}
-.input__large {
-  width: 100%;
-}
 </style>

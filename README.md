@@ -1,4 +1,4 @@
-# ferotrade
+# fenrotrade
 
 ## Project setup
 ```

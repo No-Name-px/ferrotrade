@@ -17,7 +17,7 @@ export default new Vuex.Store({
   },
   actions: {
     GET_MARKS_FROM_API({ commit }) {
-      return axios(url + "/position/marks", {
+      return axios(url + "/api/positions", {
         method: "GET",
       })
         .then((marks) => {

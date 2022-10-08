@@ -11,7 +11,7 @@
       <p
         v-for="option in options"
         @click="setOption(option)"
-        :key="option.value"
+        :key="option.name"
       >
         {{ option.name }}
       </p>
